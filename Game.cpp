@@ -376,6 +376,8 @@ void T::Game::calculateScore()
 			num -= 13;
 		player1.score += num;
 	}
+	if (player1.score == 21)
+		player1.isStand = true;
 	if (player1.score == 0 || player1.score == 1)
 	{
 		std::cout << "ERROR! Invalid Score" << std::endl;
@@ -411,6 +413,8 @@ void T::Game::calculateScore()
 			num -= 13;
 		player2.score += num;
 	}
+	if (player2.score == 21)
+		player2.isStand = true;
 	if (player2.score == 0 || player2.score == 1)
 	{
 		std::cout << "ERROR! Invalid Score" << std::endl;
@@ -425,14 +429,12 @@ void T::Game::calculateScore()
 //Detects The End Of The Game
 void T::Game::end()
 {
-	bool isBust = false, isBlackjack = false;
+	bool isBust = false;
 
 
 	//Checks For Condition Of The Computer
 	if (player2.score > 21)
 		isBust = true;
-	else if (player2.score == 21)
-		isBlackjack = true;
 
 
 	//Checks For Condition Of The Player
@@ -441,9 +443,9 @@ void T::Game::end()
 		isBust ? text[2].setString("Its A Tie! You & The Computer Got Busted") : text[2].setString("You Lost! You Got Busted");
 		text[2].setPosition(static_cast <float> (0), static_cast <float> (130));
 	}
-	else if (player1.score == 21)
+	else if (player1.score == 21 && (player2.isStand || isBust))
 	{
-		isBlackjack ? text[2].setString("Its A Tie! You & The Computer Got Blackjack") : text[2].setString("You Won! You Got Blackjack");
+		player2.score == 21 ? text[2].setString("Its A Tie! You & The Computer Got Blackjack") : text[2].setString("You Won! You Got Blackjack");
 		text[2].setPosition(static_cast <float> (0), static_cast <float> (130));
 	}
 	else
@@ -453,7 +455,7 @@ void T::Game::end()
 			text[2].setString("You Won! The Computer Got Busted");
 			text[2].setPosition(static_cast <float> (0), static_cast <float> (130));
 		}
-		else if (isBlackjack)
+		else if (player2.score == 21 && (player1.isStand || player1.score >= 21))
 		{
 			text[2].setString("You Lost! The Computer Got Blackjack");
 			text[2].setPosition(static_cast <float> (0), static_cast <float> (130));
